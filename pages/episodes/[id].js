@@ -1,7 +1,22 @@
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
-import Image from "next/image";
 import Link from "next/link";
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
+import Typography from "@material-ui/core/Typography";
 
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    maxWidth: 600,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "30px",
+    margin: "auto",
+  },
+  title: {
+    fontSize: 14,
+  }
+}));
 export async function getStaticPaths() {
   const client = new ApolloClient({
     uri: "https://rickandmortyapi.com/graphql/",
@@ -60,22 +75,35 @@ export const getStaticProps = async (context) => {
   };
 };
 export default function Details({ episode }) {
+  const classes = useStyles();
   return (
     <div>
-      <h2>{episode.name}</h2>
-      <p>{episode.episode}</p>
-      <p>{episode.air_date}</p>
-      <ul style={{ listStyle: "none" }}>
-        {episode.characters.map((character) => {
-          return (
-            <li>
-              <Link href={"/characters/" + character.id} key={character.id}>
-                <a>{character.name}</a>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+      <Container className={classes.root}>
+          <Typography variant="h4" component="h4">
+            {episode.name}
+          </Typography>
+          <Typography variant="body" component="p">
+            {episode.episode}
+          </Typography>
+          <Typography variant="body" component="p">
+            {episode.air_date}
+          </Typography>
+          <Typography variant="h5" component="h5">
+            Characters
+          </Typography>
+          <ul style={{ listStyle: "none" }}>
+            {episode.characters.map((character) => {
+              return (
+                <li>
+                  <Link href={"/characters/" + character.id} key={character.id}>
+                    <a>{character.name}</a>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </Container>
+    
     </div>
   );
 }

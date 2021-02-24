@@ -1,40 +1,70 @@
+ import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
  import Image from "next/image";
 
- export const getStaticPaths = async () => {
-   const res = await fetch("https://rickandmortyapi.com/api/character");
-   const data = await res.json();
+ 
+ export async function getStaticPaths() {
+  const client = new ApolloClient({
+    uri: "https://rickandmortyapi.com/graphql/",
+    cache: new InMemoryCache(), 
+  });
 
-   const paths = data.results.map((character) => {
-     return {
-       params: { id: character.id.toString() },
-     };
-   });
+  const { data } = await client.query({
+    query: gql`
+      query {
+        characters {
+          results {
+            name
+            id
+        }
+      }
+    }
+    `, 
+  });
+  const paths = data.characters.results.map(character => {
+      return {
+          params: {id: character.id.toString() }
+      }
+  })
+  return {
+      paths: paths,
+      fallback: false
+    }
+  }
 
-   return {
-     paths,
-     fallback: false,
-   };
- };
+export const getStaticProps = async (context) => {
+    const id = context.params.id;
+    const client = new ApolloClient({
+      uri: "https://rickandmortyapi.com/graphql/",
+      cache: new InMemoryCache(),
+    });
+    const { data } = await client.query({
+      query: gql`
+        query {
+          character(id: ${id}) {
+            name
+            image
+            location {
+              name
+            }
+            species
+          }
+        }
+      `,
+    });
 
- export const getStaticProps = async (context) => {
-   const id = context.params.id;
-   const res = await fetch("https://rickandmortyapi.com/api/character/" + id);
-   const data = await res.json();
-
-   return {
-     props: { character: data },
-   };
- };
-
- const Details = ({ character }) => {
-   return (
-     <div>
-       <h1>{character.name}</h1>
-       <p>{character.species}</p>
-       <p>{character.location.name}</p>
-       <Image src={character.image} width={300} height={300} padding={30} />
-     </div>
-   );
- };
-
- export default Details;
+    return {
+        props: {
+          character: data.character,
+        },
+      };
+}
+export default function Details({character}) {
+    return (
+      <div>
+        <h2>{character.name}</h2>
+        <p>{character.location.name}</p>
+        <p>{character.species}</p>
+        <Image src={character.image} width={300} height={300} padding={30} />
+      </div>
+    );
+}

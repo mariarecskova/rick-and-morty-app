@@ -44,7 +44,7 @@ function Home() {
                   style={{
                     textDecoration: "none",
                     color: "white",
-                    fontSize: "17px",
+                    fontSize: "18px",
                     float: "right",
                   }}
                 >

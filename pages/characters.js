@@ -1,4 +1,5 @@
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+import React, { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image"
@@ -9,10 +10,9 @@ import Typography from "@material-ui/core/Typography";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import IconButton from "@material-ui/core/IconButton";
 
-// import Link from "next/link";
 
+//styles
 const useStyles = makeStyles((theme) => ({
- 
   root: {
     maxWidth: 300,
     justifyContent: "center",
@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
     padding: "30px",
     margin: "auto",
     marginTop: "40px",
+    backgroundColor: "#f5f5f5",
   },
   media: {
     height: 0,
@@ -27,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+//API
 export async function getStaticProps() {
   const client = new ApolloClient({
     uri: "https://rickandmortyapi.com/graphql/",
@@ -62,22 +64,28 @@ export async function getStaticProps() {
   };
 }
 
-
+//JSX
 export default function CharacterOverview({ characters }) {
-   const classes = useStyles();
+  const classes = useStyles();
+  const [favorite, setfavorite] = useState(false);
+
+  //this needs to be finished..
+  function handleClick() {
+    localStorage.setItem( "myFavorite", favorite)
+    setfavorite();
+  }
+ 
   return (
     <div>
       <Head></Head>
       <div>
-        <h1 style={{margin: "auto", textAlign: "center", padding: "20px"}} >
-         Rick and Morty Characters
-        </h1>
+        <Typography variant="h3" component="h3" align="center" >
+          Rick and Morty Characters
+        </Typography>
         <ul style={{ listStyle: "none" }}>
           {characters.map((character) => {
             return (
-              <Card
-                className={classes.root}
-              >
+              <Card className={classes.root}>
                 <li>
                   <CardMedia>
                     <Image
@@ -97,7 +105,10 @@ export default function CharacterOverview({ characters }) {
                       </a>
                     </Link>
                   </Typography>
-                  <IconButton aria-label="add to favorites">
+                  <IconButton
+                    aria-label="add to favorites"
+                    onclick={handleClick}
+                  >
                     <FavoriteIcon />
                   </IconButton>
                 </li>

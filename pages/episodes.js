@@ -4,9 +4,15 @@ import Link from "next/link";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import Typography from "@material-ui/core/Typography";
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
-
-
+const theme = createMuiTheme({
+  palette: {
+    background: {
+      default: "#f5f5f5",
+    },
+  },
+});
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 300,
@@ -15,6 +21,9 @@ const useStyles = makeStyles((theme) => ({
     padding: "30px",
     margin: "auto",
     marginTop: "40px",
+  },
+  MuiTypography: {
+    align: "center",
   },
 }));
 
@@ -54,30 +63,32 @@ export async function getStaticProps() {
     const classes = useStyles();
     return (
       <div>
-        <Head></Head>
-        <div>
-          <h1 style={{ margin: "auto", textAlign: "center", padding: "20px" }}>
-            Rick and Morty Episodes
-          </h1>
-          <ul style={{ listStyle: "none" }}>
-            {episodes.map((episode) => {
-              return (
-                <Card className={classes.root}>
-                  <li>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      <Link href={"/episodes/" + episode.id} key={episode.id}>
-                        <a>{episode.name}</a>
-                      </Link>
-                    </Typography>
-                    <Typography variant="body" component="p">
-                      {episode.episode}
-                    </Typography>
-                  </li>
-                </Card>
-              );
-            })}
-          </ul>
-        </div>
+        <MuiThemeProvider theme={theme}>
+          <Head></Head>
+          <div>
+            <Typography variant="h3" component="h3" align="center">
+              Rick and Morty Episodes
+            </Typography>
+            <ul style={{ listStyle: "none" }}>
+              {episodes.map((episode) => {
+                return (
+                  <Card className={classes.root}>
+                    <li>
+                      <Typography gutterBottom variant="h5" component="h2">
+                        <Link href={"/episodes/" + episode.id} key={episode.id}>
+                          <a>{episode.name}</a>
+                        </Link>
+                      </Typography>
+                      <Typography variant="body" component="p">
+                        {episode.episode}
+                      </Typography>
+                    </li>
+                  </Card>
+                );
+              })}
+            </ul>
+          </div>
+        </MuiThemeProvider>
       </div>
     );
   }

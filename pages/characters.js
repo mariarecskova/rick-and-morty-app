@@ -70,10 +70,10 @@ export default function CharacterOverview({ characters }) {
   const [favorite, setfavorite] = useState(false);
 
   //this needs to be finished..
-  function handleClick() {
-    localStorage.setItem( "myFavorite", favorite)
-    setfavorite();
-  }
+  // function handleClick() {
+  //   localStorage.setItem( "myFavorite", favorite)
+  //   setfavorite();
+  // }
  
   return (
     <div>
